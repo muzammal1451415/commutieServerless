@@ -65,22 +65,38 @@ provider:
 functions:
   hello:
     handler: handler.hello
-#    The following are a few example events you can configure
-#    NOTE: Please make sure to change your handler code to work with those events
-#    Check the event documentation for details
     events:
       - httpApi:
          path: /user
          method: get
   CreateUser:
     handler: lambdas/CreateUser.handler
-#    The following are a few example events you can configure
-#    NOTE: Please make sure to change your handler code to work with those events
-#    Check the event documentation for details
     events:
       - httpApi:
          path: /addUser
-         method: post         
+         method: post  
+
+  Login:
+    handler: lambdas/Login.handler
+    events:
+      - httpApi:
+         path: /login
+         method: post  
+
+  ForgotPassword:
+    handler: lambdas/ForgotPassword.handler
+    events:
+      - httpApi:
+         path: /forgot-password
+         method: post  
+
+  UpdateUser:
+    handler: lambdas/UpdateUser.handler
+    events:
+      - httpApi:
+         path: /update-user
+         method: put           
+                
 #      - websocket: $connect
 #      - s3: ${env:BUCKET}
 #      - schedule: rate(10 minutes)

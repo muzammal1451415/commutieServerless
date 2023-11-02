@@ -6,7 +6,7 @@ exports.handler = async event => {
     console.log("Event",event)
     var {name,gender,email,password,location_text,location_latlong,phone_number,login_by} = JSON.parse(event.body)
     if(!name || !gender || !email || !password || !login_by){
-        return responses._400({message: "Some fields are missing"})
+        return responses._400("Some fields are missing")
     }
 
     const connection = await dbConnection.getConnection()
@@ -26,7 +26,7 @@ exports.handler = async event => {
         // Process the results
     } catch (error) {
         console.error('Error:', error);
-        return responses._400({message: error.message})
+        return responses._400(error.message)
     } finally {
          connection.release();
     }
