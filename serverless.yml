@@ -53,9 +53,9 @@ provider:
       Resource: '*'
 # you can define service wide environment variables here
   environment:
-    DB_HOST: free-tier-databse-instance.cxty0grubyip.ap-south-1.rds.amazonaws.com
-    DB_USER: admin
-    DB_PASSWORD: root4321
+    DB_HOST: db_host
+    DB_USER: db_user
+    DB_PASSWORD: db_password
     DB_NAME: Commutie_DB
     Geo_SPATIAL_TABLE: ${self:custom.Geo_SPATIAL_TABLE}
     Commute: commute
