@@ -13,19 +13,15 @@ exports.handler = async event => {
         return responses._400("Email is missing")
     }
 
-    if(!login_by){
-        return responses._400("Login by is missing")
-    }
-
     const connection = await dbConnection.getConnection()
 
     try {
         
         // Checking email availability
-        const [rows] = await connection.execute('SELECT 1 FROM User WHERE email = ?', [email]);
+        const [rows] = await connection.execute('SELECT 1 FROM user WHERE email = ?', [email]);
         //return responses._200(rows)
         if(rows.length < 1){
-            return responses._400("${email} is not found")
+            return responses._400(`${email} is  not found`)
         }
 
         if(login_by !== constants.loginBy.GENERAL){
@@ -37,9 +33,9 @@ exports.handler = async event => {
 
             if(!password){
                 return responses._400("Password is missing")
-           `` }
+             }
             // Checking email and password validity
-            const [record] = await connection.execute('SELECT * FROM User WHERE email = ? AND password = ?', [email, password]);
+            const [record] = await connection.execute('SELECT * FROM user WHERE email = ? AND password = ?', [email, password]);
             if(record.length < 1){
                 return responses._400("Email or Password is wrong")
             }

@@ -34,10 +34,10 @@ exports.handler = async event => {
     try{
 
     if(!old_password && !new_password){
-        // dont need to check password matching bcz they are not provided
+        // dont need to check password matching bcz they did not provide
         
         const updateSql = `UPDATE ${constants.tables.USER} SET ${updatableFields.join(', ')} WHERE email = ?`;
-        const [result] = await connection.execute(updateSql, [email]);
+        const [result] = await connection.execute(updateSql, [email]);  
         return responses._200(null, "Your information updated successfully!")
 
     }else{

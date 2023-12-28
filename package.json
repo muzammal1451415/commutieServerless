@@ -1,6 +1,11 @@
 {
   "dependencies": {
+    "@trufala/dynageo": "^0.0.1",
+    "aws-sdk": "^2.1489.0",
+    "dynamodb-geo": "^0.4.0",
+    "dynamodb-geo-v3": "^1.0.0",
     "jsonwebtoken": "^9.0.2",
-    "mysql2": "^3.6.2"
+    "mysql2": "^3.6.2",
+    "uuid": "^9.0.1"
   }
 }

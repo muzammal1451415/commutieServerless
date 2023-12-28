@@ -11,7 +11,7 @@
 #
 # Happy Coding!
 
-service: commutieserverless
+service: commutieserverlesss
 # app and org for use with dashboard.serverless.com
 # app: commutie-app
 # org: partinn
@@ -46,13 +46,26 @@ provider:
 #              - - "arn:aws:s3:::"
 #                - "Ref" : "ServerlessDeploymentBucket"
 #                - "/*"
-
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - dynamodb:*
+      Resource: '*'
 # you can define service wide environment variables here
   environment:
     DB_HOST: free-tier-databse-instance.cxty0grubyip.ap-south-1.rds.amazonaws.com
     DB_USER: admin
     DB_PASSWORD: root4321
     DB_NAME: Commutie_DB
+    Geo_SPATIAL_TABLE: ${self:custom.Geo_SPATIAL_TABLE}
+    Commute: commute
+    Commute_Waypoints: commute_waypoints
+    Commute_Search_Text: commute_search_text
+    Commute_images: commute_images
+    Commute_Geo_Spatial: commute_geo_spatial
+  
+custom:
+  Geo_SPATIAL_TABLE: GeoSpatialTable
 
 # you can add packaging information here
 #package:
@@ -95,7 +108,26 @@ functions:
     events:
       - httpApi:
          path: /update-user
-         method: put           
+         method: put    
+  CreateCommute:
+    handler: lambdas/CreateCommute.handler
+    events:
+      - httpApi:
+         path: /create-commute
+         method: post    
+  GetCommutes:
+    handler: lambdas/GetCommutes.handler
+    events:
+      - httpApi:
+         path: /commutes
+         method: get             
+
+  test:
+    handler: lambdas/test.handler
+    events:
+      - httpApi:
+         path: /test
+         method: get                          
                 
 #      - websocket: $connect
 #      - s3: ${env:BUCKET}
@@ -131,13 +163,44 @@ functions:
 #      variable2: value2
 
 # you can add CloudFormation resource templates here
-#resources:
-#  Resources:
-#    NewResource:
-#      Type: AWS::S3::Bucket
-#      Properties:
-#        BucketName: my-new-bucket
-#  Outputs:
-#     NewOutput:
-#       Description: "Description for the output"
-#       Value: "Some output value"
+
+resources:
+  Resources:
+    GeoSpatialSearchTable:
+     Type: AWS::DynamoDB::Table
+     Properties:
+      TableName: ${self:custom.Geo_SPATIAL_TABLE}
+      AttributeDefinitions:
+        - AttributeName: hashKey
+          AttributeType: N
+        - AttributeName: rangeKey
+          AttributeType: S
+        - AttributeName: geohash
+          AttributeType: N
+        - AttributeName: userId
+          AttributeType: S          
+      KeySchema:
+        - AttributeName: hashKey
+          KeyType: HASH
+        - AttributeName: rangeKey
+          KeyType: RANGE
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      LocalSecondaryIndexes:
+        - IndexName: local-geohash-index
+          KeySchema:
+            - AttributeName: hashKey
+              KeyType: HASH
+            - AttributeName: geohash
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+        - IndexName: userid-index
+          KeySchema:
+            - AttributeName: hashKey
+              KeyType: HASH
+            - AttributeName: userId
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL            
